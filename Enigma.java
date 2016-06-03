@@ -24,7 +24,26 @@ public class Enigma
             if (numero > 10) {
                 numeroEncriptado= mecanismo.getNumero() * numero;        
             } 
-        }         
+        } 
+        else if (mecanismo instanceof MecanismoOffset) {
+            if (numero > 10) {
+                String num = Integer.toString(numero);
+                for (int i = 0; i < num.length(); i++) {
+                    String caracter = num.substring(1,num.length()-i);
+                    if (caracter.length() >= 1) {
+                        int n = Integer.parseInt(caracter) % 10 + mecanismo.getNumero();
+                        if (n < 10){
+                            numero += mecanismo.getNumero() * (Math.pow(10,i));
+                        }
+                        else {
+                            numero += mecanismo.getNumero() * (Math.pow(10,i));
+                            numero -= (Math.pow(10,i + 1));
+                        }
+                    }
+                }
+                numeroEncriptado = numero;
+            }            
+        }
         return numeroEncriptado;
     }
 
@@ -40,6 +59,27 @@ public class Enigma
                 numeroDesencriptado = -1;
             }      
         } 
+        else if (mecanismo instanceof MecanismoOffset){
+            if (numero > 10){
+                String num = Integer.toString(numero);
+                for (int i = 0; i < num.length(); i++){
+                    String caracter = num.substring(1,num.length()-i);
+                    if (caracter.length() >= 1){
+                        int digito = Integer.parseInt(caracter) % 10 + mecanismo.getNumero();
+                        if ((Integer.parseInt(caracter) % 10 - mecanismo.getNumero()) >= 0){
+                            numero -= mecanismo.getNumero() * (Math.pow(10,i));
+                        }
+                        else {
+                            numero -= mecanismo.getNumero() * (Math.pow(10,i));
+                            numero += (Math.pow(10,i + 1));
+                        }
+                    }
+                }
+                if (numero > 10){
+                    numeroDesencriptado = numero;
+                }
+            }
+        }
         return numeroDesencriptado;
     }
 }
